@@ -29,8 +29,8 @@ void myCombine(void *root, void *left, void *right){
   if(!root)
     return;
   ((myData*)root)->sum = getVal(root) + getSum(left) + getSum(right);
-  ((myData*)root)->mn = min(getVal(root), min(getSum(left), getSum(right)));
-  ((myData*)root)->mx = max(getVal(root), max(getSum(left), getSum(right)));
+  ((myData*)root)->mn = min(getVal(root), min(getMin(left), getMin(right)));
+  ((myData*)root)->mx = max(getVal(root), max(getMax(left), getMax(right)));
 }
 
 void myPushDown(void *nextDownData, void *downData){

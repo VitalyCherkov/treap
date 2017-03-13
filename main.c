@@ -12,6 +12,7 @@ void addElement(decTree *myTree){
     return;
   int val;
   size_t pos;
+  printf("val\tpos\n");
   if(scanf("%d %zu\n", &val, &pos) != 2)
     return;
   myData newData = createMyData(val);
@@ -21,6 +22,7 @@ void removeSegment(decTree *myTree){
   if(!myTree)
     return;
   size_t lPos, rPos;
+  printf("lPos\nrPos\n");
   if(scanf("%zu %zu", &lPos, &rPos) != 2)
     return;
   eraseSegmentD(myTree, lPos, rPos);
@@ -30,6 +32,7 @@ void modifySegment(decTree *myTree){
     return;
   int multipler, addendum;
   size_t lPos, rPos;
+  printf("lPos\trPos\tmultipler\taddendum\n");
   if(fscanf(stdin, "%zu %zu\n%d %d", &lPos, &rPos, &multipler, &addendum) != 4)
     return;
   myDownData md = createMyDownData(multipler, addendum);
@@ -87,7 +90,23 @@ void menu(decTree *myTree){
 int main(){
   decTree myTree;
   createDecTree(&myTree, myCombine, myPushDown, myRecalcData);
-  menu(&myTree);
+  //menu(&myTree);
+  myData md = createMyData(0);
+  addElementD(&myTree, &md, sizeof(myData), 0);
+
+  for(int i = 1; i < 15; i++){
+    size_t pos = rand() % (i + 1);
+    printf ("%zu %d\n", pos, i);
+    md = createMyData(i);
+    addElementD(&myTree, &md, sizeof(myData), pos);
+  }
+
+  for(size_t i = 0; i < 15; i++){
+    md = *(myData*)getSegmentD(&myTree, i, i);
+    printf("[%zu] val: %d; min: %d; max: %d; sum: %d\n", i,
+      md.val, md.mn, md.mx, md.sum);
+  }
+
   freeDecTree(&myTree);
   return 0;
 }
