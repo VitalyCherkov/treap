@@ -1,11 +1,11 @@
 #include "myData.h"
 
-int max(int a, int b){
+int Max(int a, int b){
   if(a > b)
     return a;
   return b;
 }
-int min(int a, int b){
+int Min(int a, int b){
   if(a < b)
     return a;
   return b;
@@ -29,8 +29,8 @@ void myCombine(void *root, void *left, void *right){
   if(!root)
     return;
   ((myData*)root)->sum = getVal(root) + getSum(left) + getSum(right);
-  ((myData*)root)->mn = min(getVal(root), min(getMin(left), getMin(right)));
-  ((myData*)root)->mx = max(getVal(root), max(getMax(left), getMax(right)));
+  ((myData*)root)->mn = Min(getVal(root), Min(getMin(left), getMin(right)));
+  ((myData*)root)->mx = Max(getVal(root), Max(getMax(left), getMax(right)));
 }
 
 void myPushDown(void *nextDownData, void *downData){

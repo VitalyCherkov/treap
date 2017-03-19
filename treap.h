@@ -10,8 +10,10 @@
 // -----------------------------------------------------------------
 
 typedef struct decTree{
-  struct decTree *this;
+  struct decTree *that;
   struct treap *tree;
+
+  size_t sizeOfData;
 
   void (*combineData)(void *root, void *left, void *right);
   void (*pushDown)(void *root, void *downData);
@@ -21,9 +23,10 @@ typedef struct decTree{
 void createDecTree(decTree *tree,
   void (*combineData)(void *root, void *left, void *right),
   void (*pushDown)(void *nextDownData, void *downData),
-  void (*recalcData)(void *update, void *downData, size_t numElOfT)
+  void (*recalcData)(void *update, void *downData, size_t numElOfT),
+  size_t sizeOfData
 );
-void addElementD(decTree *tree, void *data, size_t sizeOfData, size_t pos);
+void addElementD(decTree *tree, void *data, size_t pos);
 void* getSegmentD(decTree *tree, size_t l, size_t r);
 void eraseSegmentD(decTree *tree, size_t l, size_t r);
 void modifySegmentD(decTree *tree, size_t l, size_t r, void* downData);
@@ -33,14 +36,14 @@ void freeDecTree(decTree *tree);
 // treap
 // -----------------------------------------------------------------
 
-typedef struct treap{
-  void *data;
-  void *downData;
+typedef struct treap {
+	void *data;
+	void *downData;
 
-  size_t size;
-  int level;
-  struct treap *left;
-  struct treap *right;
+	size_t size;
+	int level;
+	struct treap *left;
+	struct treap *right;
 } treap;
 
 void clearT(treap **node);
@@ -58,7 +61,7 @@ void mergeT(treap **root, treap *left, treap *right, decTree *head);
 void splitT(treap *root, treap **left, treap **right, size_t key, decTree *head);
 
 int addT(
-  treap **root, void *data, size_t sizeOfData, void *downData,
+  treap **root, void *data, void *downData,
   size_t sizeOfDownData, size_t pos, decTree *head
 );
 int eraseT(treap **root, size_t firstPos, size_t lastPos, decTree *head);

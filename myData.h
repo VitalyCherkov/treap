@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int max(int a, int b);
-int min(int a, int b);
+int Max(int a, int b);
+int Min(int a, int b);
 
 typedef struct myData{
   int val;

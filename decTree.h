@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 struct decTree{
-  struct decTree *this;
+  struct decTree *that;
   struct treap *tree;
 
   void (*combineData)(void **root, void *left, void *right);

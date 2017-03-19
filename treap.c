@@ -5,6 +5,13 @@
 #include "treap.h"
 //#include "decTree.h"
 
+void* cpyDataT(void *from, size_t sizeOfData) {
+	void* newData = malloc(sizeOfData);
+	if (!newData)
+		return NULL;
+	return memcpy(newData, from, sizeOfData) ? newData : NULL;
+}
+
 void clearT(treap **node){
   if(*node == NULL)
     return;
@@ -14,8 +21,10 @@ void clearT(treap **node){
 }
 void freeNodeT(treap **node){
   if(*node){
-    free((*node)->data);
-    free((*node)->downData);
+	if((*node)->data)
+		free((*node)->data);
+	if ((*node)->downData)
+		free((*node)->downData);
   }
   else
     return;
@@ -30,26 +39,14 @@ treap* createNodeT(void *data, size_t sizeOfData, void *downData, size_t sizeOfD
     return NULL;
   }
 
-  node->data = malloc(sizeOfData);
-  if(node->data == NULL){
-    freeNodeT(&node);
-    return NULL;
-  }
-
-  memcpy(node->data, data, sizeOfData);
+  node->data = cpyDataT(data, sizeOfData);
   if(node->data == NULL){
     freeNodeT(&node);
     return NULL;
   }
 
   if(downData){
-    node->downData = malloc(sizeOfDownData);
-    if(node->downData == NULL){
-      freeNodeT(&node);
-      return NULL;
-    }
-
-    memcpy(node->downData, downData, sizeOfDownData);
+	node->downData = cpyDataT(downData, sizeOfDownData);
     if(node->downData == NULL){
       freeNodeT(&node);
       return NULL;
@@ -101,12 +98,13 @@ size_t getSizeT(treap *node){
 
 // В левом дереве останется ровно key вершин
 void splitT(treap *root, treap **left, treap **right, size_t key, decTree *head){
+  pushT(left, head);
+  pushT(right, head);
   if(root == NULL){
     *left = *right = NULL;
     return;
   }
-  pushT(left, head);
-  pushT(right, head);
+
 
   // Если корень должен принадлежать левому поддереву
   if(key > getSizeT((*root).left)){
@@ -143,10 +141,10 @@ void mergeT(treap **root, treap *left, treap *right, decTree *head){
   updateT(root, head);
 }
 
-int addT(treap **root, void *data, size_t sizeOfData, void *downData,
+int addT(treap **root, void *data, void *downData,
   size_t sizeOfDownData, size_t pos, decTree *head
 ){
-  treap *newData = createNodeT(data, sizeOfData, downData, sizeOfDownData);
+  treap *newData = createNodeT(data, head->sizeOfData, downData, sizeOfDownData);
 
   if(newData == NULL)
     return EXIT_FAILURE;
@@ -194,11 +192,16 @@ void* getSubT(treap *root, size_t left, size_t right, decTree *head){
   treap *lT = NULL;
   treap *rT = NULL;
 
+  void *cpyAns = NULL;
+
   splitT(root, &lT, &rT, right + 1, head);
   splitT(lT, &lT, &ansT, left, head);
+  cpyAns = cpyDataT(ansT->data, head->sizeOfData);
+  mergeT(&lT, lT, ansT, head);
+  mergeT(&root, lT, rT, head);
 
-  if(!ansT)
+  if(!cpyAns)
     return NULL;
 
-  return ansT;
+  return cpyAns;
 }

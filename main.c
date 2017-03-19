@@ -16,7 +16,7 @@ void addElement(decTree *myTree){
   if(scanf("%d %zu\n", &val, &pos) != 2)
     return;
   myData newData = createMyData(val);
-  addElementD(myTree, &newData, sizeof(newData), pos);
+  addElementD(myTree, &newData, pos);
 }
 void removeSegment(decTree *myTree){
   if(!myTree)
@@ -50,7 +50,7 @@ void printSegment(decTree *myTree){
     return;
 
   printf(
-    "val: %d\nsum: %d\nmax: %d\n min: %d\n----\n",
+    "val: %d\nsum: %d\nmax: %d\n Min: %d\n----\n",
     md->val, md->sum, md->mx, md->mn
   );
 }
@@ -89,22 +89,37 @@ void menu(decTree *myTree){
 
 int main(){
   decTree myTree;
-  createDecTree(&myTree, myCombine, myPushDown, myRecalcData);
+  createDecTree(&myTree, myCombine, myPushDown, myRecalcData, sizeof(myData));
   //menu(&myTree);
   myData md = createMyData(0);
-  addElementD(&myTree, &md, sizeof(myData), 0);
+  addElementD(&myTree, &md, 0);
 
   for(int i = 1; i < 15; i++){
     size_t pos = rand() % (i + 1);
     printf ("%zu %d\n", pos, i);
     md = createMyData(i);
-    addElementD(&myTree, &md, sizeof(myData), pos);
+    addElementD(&myTree, &md, pos);
   }
 
   for(size_t i = 0; i < 15; i++){
     md = *(myData*)getSegmentD(&myTree, i, i);
-    printf("[%zu] val: %d; min: %d; max: %d; sum: %d\n", i,
+    printf("[%zu] val: %d; Min: %d; Max: %d; sum: %d\n", i,
       md.val, md.mn, md.mx, md.sum);
+  }
+
+  for (size_t i = 0; i < 15; i++) {
+
+	  size_t from = (rand() - 1) % 14 + 1;
+	  size_t to = (rand() - 1) % 14 + 1;
+	  if (from > to) {
+		from += to;
+		to = from - to;
+		from -= to;
+	  }
+
+	  md = *(myData*)getSegmentD(&myTree, from, to);
+	  printf("[%zu: %zu] val: %d; Min: %d; Max: %d; sum: %d\n", from, to,
+		  md.val, md.mn, md.mx, md.sum);
   }
 
   freeDecTree(&myTree);
